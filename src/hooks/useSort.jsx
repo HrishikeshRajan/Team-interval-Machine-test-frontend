@@ -1,16 +1,15 @@
-import { useContext, useEffect, useState } from 'react'
-import baseUrl from '../../constants/baseUrl'
+import { useContext, useState } from 'react'
 import { TaskContext } from '../memory/context'
+import baseUrl from '../../constants/baseUrl'
 
-const useListAllTasks = () => {
-
+const useSort = () => {
     const  {update} = useContext(TaskContext)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
-    useEffect(() =>{
-        const getData = async () => {
+
+        const getData = async (sortBy) => {
             try {
-                const response = await fetch(`${baseUrl}/task/list/all`, {
+                const response = await fetch(`${baseUrl}/task/list/sort/priority?sort=${sortBy}`, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -27,12 +26,8 @@ const useListAllTasks = () => {
             }
         }
 
-        getData()
- 
-
-    },[error, loading])
-
-    return [loading, error]
+    
+    return [getData , loading, error]
 }
 
-export default useListAllTasks
+export default useSort

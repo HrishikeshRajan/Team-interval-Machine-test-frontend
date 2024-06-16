@@ -14,7 +14,7 @@ const Tasks = ({tasks, setEditData}) => {
 
     const {deleteTask} = useContext(TaskContext)
 
-   const [deleteTaskById,loading, error] =  useDeleteTask()
+   const [deleteTaskById] =  useDeleteTask()
 
 
    const handleDeletetask = (item) => {
