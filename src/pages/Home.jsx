@@ -11,11 +11,12 @@ import { MdDelete } from "react-icons/md";
 import { FaFilter } from "react-icons/fa";
 import Input from '../components/ui/Input'
 import { TaskContext } from '../memory/context';
+import useSubmit from '../hooks/useSubmit';
+import useCloudinary from '../hooks/useCloudinary';
 
 
 const Home = () => {
 
-  // const [items] = useState(tasks)
   const {tasks, deleteTask} = useContext(TaskContext)
 
   const [addForm, setAddFrom] = useState(false)
@@ -24,8 +25,6 @@ const Home = () => {
   const [description, setDescription] = useState('');
   const [dateTime, setDateTime] = useState('');
   const [priority, setPriority] = useState('low');
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
 
 
@@ -33,68 +32,36 @@ const Home = () => {
      setHeading(item.heading)
      setDescription(item.description)
      setDateTime(item.dateTime)
-     setImage(item.image)
      setPriority(item.priority)
      setAddFrom(true)
   }
 
+
+  const [uploadImage, imageError, imageLoading] = useCloudinary()
   const uploadImageDisplay = async (e) => {
 
     try{
-      
-      const data = new FormData()
-      data.append("file", e.target.files[0])
-      data.append("upload_preset", "machinetest")
-      data.append("cloud_name","dxv2tmvfw")
-    
 
-      const url = `https://api.cloudinary.com/v1_1/dxv2tmvfw/image/upload`
-      const res = await fetch(url,{
-        method:"post",
-        body: data
-        })
-       
-        const re = await res.json()
-        setImageUrl(re.url)
+      if(!e.target.files[0]){ return}
+      
+     const url =  await uploadImage(e.target.files[0])
+       console.log(url)
+       setImageUrl(url)
 
     }catch(e){
       console.log(e)
     }
-    setImage(e.target.files[0])
   }
 
-  const onsubmit = async (e) => {
+   const {postRequest, error, loading} = useSubmit({heading,description,dateTime,priority,imageUrl})
+ 
+ 
+   const onsubmit = async (e) => {
     e.preventDefault()
-    try {
-             setLoading(true)
-      const formData = new FormData();
-      formData.append('heading', heading);
-      formData.append('description', description);
-      formData.append('dateTime', dateTime);
-      data.append('priority', priority)
-      if (image) {
-        formData.append('image', imageUrl);
-      }
-
-
-      const response = await fetch('http://localhost:5000/api/v1/task/create', {
-        method: 'POST',
-        body: formData,
-      });
-  
-       setLoading(false)
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-  
-      const data = await response.json();
-      console.log('Success:', data);
-    } catch (error) {
-      setLoading(false)
-      console.error('Error:', error);
-    }
+    await postRequest()
   }
 
+   
   
   return (
   <Card className='w-full min-h-screen shadow-md flex justify-center items-center'>
@@ -144,6 +111,8 @@ const Home = () => {
            onSubmit={onsubmit}
            className='mt-10 w-full flex flex-col gap-2 pb-20' 
            >
+
+            {error && <p className='w-full font-bold border-2 p-2 border-red-500 rounded-md text-red-500'>Failed to add task</p>}
             <HeadingFactory level={2} className='text-xl font-bold text-slate-500'>Add your task</HeadingFactory>
               <Card className="flex flex-col w-full ">
               <label htmlFor='heading' className='text-slate-600 font-bold py-4'>Enter the heading</label>
@@ -168,16 +137,19 @@ const Home = () => {
                </select>
               </Card>
               <Card className="flex flex-col w-full border-2  p-4 rounded-xl">
-                <Card>
+               {imageUrl &&   <Card>
                   Preview
                   <img width={200} height={200} src={imageUrl} />
-                </Card> 
-              <label htmlFor='image' className='text-slate-600 font-bold py-4'>selectan image</label>
-              <Input type='file'
-               name="image"    
-    
-              onChange={uploadImageDisplay}
-               className='p-3 b w-full bg-slate-200 rounded-md' />
+                </Card> }
+                {imageError && <p className='w-full text-red-500'>image upload failed</p>}
+                {imageLoading ? <p className='w-full'>image loading...</p>  : 
+                    <>
+                    <label htmlFor='image' className='text-slate-600 font-bold py-4'>selectan image</label><Input type='file'
+                    name="image"
+
+                    onChange={uploadImageDisplay}
+                    className='p-3 b w-full bg-slate-200 rounded-md' /></>
+                }
               </Card>
 
              {addForm &&  <input type="submit" disabled={loading} value={loading ? 'loading' : 'submit'} className='p-2 bg-yellow-500 font-semibold text-black rounded-md' /> }
