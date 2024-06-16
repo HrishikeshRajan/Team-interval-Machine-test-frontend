@@ -4,20 +4,17 @@ import HeadingFactory from '../components/ui/heading'
 import Button from '../components/ui/Button'
 import { FaPlus } from "react-icons/fa6";
 import { useContext, useState } from 'react';
-import { List, ListItem } from '../components/ui/List';
-import moment from 'moment'
-import { CiEdit } from "react-icons/ci";
-import { MdDelete } from "react-icons/md";
-import { FaFilter } from "react-icons/fa";
 import Input from '../components/ui/Input'
 import { TaskContext } from '../memory/context';
 import useSubmit from '../hooks/useSubmit';
 import useCloudinary from '../hooks/useCloudinary';
+import TableHeader from '../components/tableHeader/TableHeader';
+import Tasks from '../components/tasks/Tasks';
 
 
 const Home = () => {
 
-  const {tasks, deleteTask} = useContext(TaskContext)
+  const {tasks } = useContext(TaskContext)
 
   const [addForm, setAddFrom] = useState(false)
 
@@ -76,32 +73,12 @@ const Home = () => {
        <Card className='flex justify-center'>
           <Button onClick={() => setAddFrom(!addForm)} className="bg-cyan-500 text-white p-4 w-full rounded-md flex items-center justify-center gap-2 ">Add <FaPlus /></Button>
       </Card>
+
       {/* List Section */}
 
-      {!addForm &&<Card className='w-full flex  justify-between px-1 p-4 ps-4  text-slate-700'>
-        <Card className='w-6/12'>
-        <span className='text-left'>Task</span>
-        </Card>
-        <Card className='flex flex-row justify-between items-center  xl:pe-10 w-5/12'>
-          <span className='w-full'>Edit</span><span className='w-full'>Delete</span> <span className='flex items-center gap-2 w-full'> Priority <FaFilter  size={10}/> </span>
-        </Card>
-      </Card> }
+      {!addForm && <TableHeader /> }
 
-       {!addForm && <Card className='h-[60vh] overflow-y-auto'>
-           <List className='pt-10 pb-20'>
-             {tasks.map((item) => <ListItem key={item.id} className='p-4 w-full justify-between flex items-center shadow-md '>
-            <Card className='flex gap-2 flex-col w-6/12'>
-            <span className='truncate '>{item.heading}</span>
-            <small className='text-xs text-slate-500'>{moment(item.date).format('MMMM Do YYYY, h:mm:ss a')}</small>
-            </Card>
-             <Card className='flex flex-row gap-2 justify-evenly  items-center w-5/12'>
-             <span><Button onClick={() => setEditData(item)} className='bg-blue-200 px-2 w-full py-1 rounded-xl shadow-sm'><CiEdit /></Button></span>
-              <span><Button onClick={() => deleteTask(item.id)} className='bg-red-200 text-red-500 px-2 py-1 w-full rounded-xl shadow-sm'><MdDelete /></Button></span>
-              <span><Button className={` r  ounded-xl w-20 py-1 px-2 shadow-sm ${item.priority === 'low' ?'bg-green-300': item.priority === 'medium' ? 'bg-orange-300' : 'bg-red-300'}`}>{item.priority}</Button></span>
-             </Card>
-             </ListItem>)}
-           </List>
-       </Card>}
+       {!addForm && <Tasks  tasks={tasks} setEditData={setEditData} />}
 
        {/* Add form section */}
 
