@@ -11,14 +11,15 @@ const Home = () => {
 
   const [items] = useState(tasks)
   return (
-  <Card className='w-full min-h-screen shadow-md flex items-center flex-col'>
-       <Card className='w-full xl:w-6/12 top-full mt-20  px-10 flex' >
+  <Card className='w-full min-h-screen shadow-md flex justify-center items-center'>
+   <Card className='w-full items-center  flex  flex-col'>
+   <Card className='w-full xl:w-6/12 px-1  xl:px-10 flex' >
            <HeadingFactory level={1} className='text-xl font-bold py-5 text-slate-700' >
               YOUR TASKS
            </HeadingFactory>
-       </Card>
+   </Card>
 
-      <Card className=' w-full xl:w-6/12 top-full mt-5 flex  flex-col px-10' >
+   <Card className=' w-full xl:w-6/12 flex  px-1 flex-col xl:px-10' >
        <Card className='flex justify-center'>
           <Button className="bg-cyan-500 text-white p-4 w-full rounded-md flex items-center justify-center gap-2 ">Add <FaPlus /></Button>
       </Card>
@@ -37,6 +38,7 @@ const Home = () => {
        </Card>
     </Card>
 
+   </Card>
     
   </Card>
   )
