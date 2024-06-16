@@ -2,7 +2,6 @@
 import './App.css'
 import { TaskContext } from './memory/context'
 import Home from './pages/Home'
-import { tasks } from '../src/seed/tasks.js';
 import { useState } from 'react';
 
 function App() {
@@ -12,6 +11,9 @@ function App() {
 
   const update = (arr) => {
     setTask([...arr])
+  }
+  const push = (item) => {
+    setTask([...task, item])
   }
 
   const deleteTask = (id) => {
@@ -33,7 +35,7 @@ function App() {
   
 
   return (
-    <TaskContext.Provider value={{tasks: task, deleteTask, editTask, update}}>
+    <TaskContext.Provider value={{tasks: task, deleteTask, editTask, update, push}}>
           <Home />
       </TaskContext.Provider>
 

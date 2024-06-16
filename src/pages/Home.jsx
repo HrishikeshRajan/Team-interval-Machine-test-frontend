@@ -11,27 +11,31 @@ import useCloudinary from '../hooks/useCloudinary';
 import TableHeader from '../components/tableHeader/TableHeader';
 import Tasks from '../components/tasks/Tasks';
 import useListAllTasks from '../hooks/useListAllTasks';
+import useEditTask from '../hooks/useEditTask';
 
 
 const Home = () => {
 
-  const {tasks } = useContext(TaskContext)
+  const {tasks, editTask, push } = useContext(TaskContext)
 
   const [addForm, setAddFrom] = useState(false)
-
+  const [id, setId] = useState('');
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
   const [dateTime, setDateTime] = useState('');
   const [priority, setPriority] = useState('low');
   const [imageUrl, setImageUrl] = useState('')
+  const [editMode, setEditMode] = useState(false);
 
 
   const setEditData = (item) => {
+     setId(item.id)
      setHeading(item.heading)
      setDescription(item.description)
      setDateTime(item.dateTime)
      setPriority(item.priority)
      setAddFrom(true)
+     setEditMode(true)
   }
 
   const clearEditForm = () => {
@@ -40,6 +44,7 @@ const Home = () => {
     setDateTime('')
     setPriority('')
     setAddFrom(false)
+    setEditMode(false)
  }
 
 
@@ -63,10 +68,20 @@ const Home = () => {
 
    const {postRequest, error, loading} = useSubmit({heading,description,dateTime,priority,imageUrl})
  
- 
+   const {updateRequest} = useEditTask()
    const onsubmit = async (e) => {
     e.preventDefault()
-    await postRequest()
+
+    if(editMode){
+      editTask(id, {heading,description,dateTime,priority,imageUrl,id})
+      await updateRequest({heading,description,dateTime,priority,imageUrl,id})
+      return
+    }
+
+
+    const data = await postRequest({heading,description,dateTime,priority,imageUrl})
+    push({heading,description,dateTime,priority,imageUrl,id:data.insertId})
+
   }
 
    
@@ -81,9 +96,9 @@ const Home = () => {
    </Card>
 
    <Card className=' w-full xl:w-6/12 flex relative  px-1 flex-col xl:px-10' >
-       <Card className='flex justify-center'>
+       {!addForm && <Card className='flex justify-center'>
           <Button onClick={() => setAddFrom(!addForm)} className="bg-cyan-500 text-white p-4 w-full rounded-md flex items-center justify-center gap-2 ">Add <FaPlus /></Button>
-      </Card>
+      </Card>}
 
       {/* List Section */}
 
@@ -101,7 +116,7 @@ const Home = () => {
            >
 
             {error && <p className='w-full font-bold border-2 p-2 border-red-500 rounded-md text-red-500'>Failed to add task</p>}
-            <HeadingFactory level={2} className='text-xl font-bold text-slate-500'>Add your task</HeadingFactory>
+            <HeadingFactory level={2} className='text-xl font-bold text-slate-500'>{editMode ? 'Edit your task' : 'Add your task'}</HeadingFactory>
               <Card className="flex flex-col w-full ">
               <label htmlFor='heading' className='text-slate-600 font-bold py-4'>Enter the heading</label>
               <Input type='text' value={heading} onChange={(e) => setHeading(e.target.value)} name="heading" placeholder='enter the header' className='p-3 b w-full bg-slate-200 rounded-md' />
@@ -140,7 +155,7 @@ const Home = () => {
                 }
               </Card>
 
-             {addForm &&  <input type="submit" disabled={loading} value={loading ? 'loading' : 'submit'} className='p-2 bg-yellow-500 font-semibold text-black rounded-md' /> }
+             {addForm && imageUrl && <input type="submit" disabled={loading} value={loading ? 'loading' : 'submit'} className='p-2 bg-yellow-500 font-semibold text-black rounded-md' /> }
              {addForm &&   <input type="button" value={'cancel'} onClick={() => clearEditForm()} className='p-2 bg-slate-300 font-semibold text-slate-500 text-black rounded-md' />
     }
 
