@@ -10,10 +10,58 @@ import moment from 'moment'
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { FaFilter } from "react-icons/fa";
+import Input from '../components/ui/Input'
+
 
 const Home = () => {
 
   const [items] = useState(tasks)
+  const [addForm, setAddFrom] = useState(false)
+
+  const [heading, setHeading] = useState('');
+  const [description, setDescription] = useState('');
+  const [dateTime, setDateTime] = useState('');
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false)
+
+
+
+  const uploadImageDisplay = (e) => {
+    setImage(e.target.files[0])
+  }
+
+  const onsubmit = async (e) => {
+    e.preventDefault()
+    try {
+             setLoading(true)
+      const formData = new FormData();
+      formData.append('heading', heading);
+      formData.append('description', description);
+      formData.append('dateTime', dateTime);
+      if (image) {
+        formData.append('image', image);
+      }
+
+
+      const response = await fetch('http://localhost:5000/api/v1/task/create', {
+        method: 'POST',
+        body: formData,
+      });
+  
+       setLoading(false)
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log('Success:', data);
+    } catch (error) {
+      setLoading(false)
+      console.error('Error:', error);
+    }
+  }
+
+  
   return (
   <Card className='w-full min-h-screen shadow-md flex justify-center items-center'>
    <Card className='w-full items-center  flex  flex-col'>
@@ -23,20 +71,22 @@ const Home = () => {
            </HeadingFactory>
    </Card>
 
-   <Card className=' w-full xl:w-6/12 flex  px-1 flex-col xl:px-10' >
+   <Card className=' w-full xl:w-6/12 flex relative  px-1 flex-col xl:px-10' >
        <Card className='flex justify-center'>
-          <Button className="bg-cyan-500 text-white p-4 w-full rounded-md flex items-center justify-center gap-2 ">Add <FaPlus /></Button>
+          <Button onClick={() => setAddFrom(!addForm)} className="bg-cyan-500 text-white p-4 w-full rounded-md flex items-center justify-center gap-2 ">Add <FaPlus /></Button>
       </Card>
-      <Card className='w-full flex  justify-between px-1 p-4 ps-4  text-slate-700 '>
+      {/* List Section */}
+
+      {!addForm &&<Card className='w-full flex  justify-between px-1 p-4 ps-4  text-slate-700'>
         <Card className='w-6/12'>
         <span className='text-left'>Task</span>
         </Card>
         <Card className='flex flex-row justify-between items-center  xl:pe-10 w-5/12'>
           <span className='w-full'>Edit</span><span className='w-full'>Delete</span> <span className='flex items-center gap-2 w-full'> Priority <FaFilter  size={10}/> </span>
         </Card>
-      </Card>
+      </Card> }
 
-       <Card className='h-[60vh] overflow-y-auto'>
+       {!addForm && <Card className='h-[60vh] overflow-y-auto'>
            <List className='pt-10 pb-20'>
              {items.map((item) => <ListItem key={item.id} className='p-4 w-full justify-between flex items-center shadow-md '>
             <Card className='flex gap-2 flex-col w-6/12'>
@@ -50,7 +100,49 @@ const Home = () => {
              </Card>
              </ListItem>)}
            </List>
-       </Card>
+       </Card>}
+
+       {/* Add form section */}
+
+       {addForm &&  <Card className={`w-full px-4`}>
+           <form
+
+           onSubmit={onsubmit}
+           className='mt-10 w-full flex flex-col gap-2 pb-20' 
+           >
+            <HeadingFactory level={2} className='text-xl font-bold text-slate-500'>Add your task</HeadingFactory>
+              <Card className="flex flex-col w-full ">
+              <label htmlFor='heading' className='text-slate-600 font-bold py-4'>Enter the heading</label>
+              <Input type='text' value={heading} onChange={(e) => setHeading(e.target.value)} name="heading" placeholder='enter the header' className='p-3 b w-full bg-slate-200 rounded-md' />
+              </Card>
+              <Card className="flex flex-col w-full ">
+              <label htmlFor='description' className='text-slate-600 font-bold py-4'>Enter the description</label>
+              <Input type='text' value={description} onChange={(e) => setDescription(e.target.value)}  name="description" placeholder='enter the description' className='p-3 b w-full bg-slate-200 rounded-md' />
+              </Card>
+              <Card className="flex flex-col w-full ">
+              <label htmlFor='date-time'   className='text-slate-600 font-bold py-4'>select date and time</label>
+              <Input type='datetime-local'  value={dateTime} onChange={(e) => setDateTime(e.target.value)} name="date-time" className='p-3 b w-full bg-slate-200 rounded-md' />
+              </Card>
+              <Card className="flex flex-col w-full border-2  p-4 rounded-xl">
+                <Card>
+                  Preview
+                </Card>
+              <label htmlFor='image' className='text-slate-600 font-bold py-4'>selectan image</label>
+              <Input type='file'
+               name="image"    
+    
+              onChange={uploadImageDisplay}
+               className='p-3 b w-full bg-slate-200 rounded-md' />
+              </Card>
+
+             {addForm &&  <input type="submit" disabled={loading} value={loading ? 'loading' : 'submit'} className='p-2 bg-yellow-500 font-semibold text-black rounded-md' /> }
+             {addForm &&   <input type="button" value={'cancel'} onClick={() => setAddFrom(!addForm)} className='p-2 bg-slate-300 font-semibold text-slate-500 text-black rounded-md' />
+    }
+
+           </form>
+       </Card> }
+
+    
     </Card>
 
    </Card>
