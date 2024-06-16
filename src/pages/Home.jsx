@@ -3,19 +3,22 @@ import Card from '../components/ui/Card'
 import HeadingFactory from '../components/ui/heading'
 import Button from '../components/ui/Button'
 import { FaPlus } from "react-icons/fa6";
-import { useState } from 'react';
-import { tasks } from '../seed/tasks';
+import { useContext, useState } from 'react';
+// import { tasks } from '../seed/tasks';
 import { List, ListItem } from '../components/ui/List';
 import moment from 'moment'
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { FaFilter } from "react-icons/fa";
 import Input from '../components/ui/Input'
+import { TaskContext } from '../memory/context';
 
 
 const Home = () => {
 
-  const [items] = useState(tasks)
+  // const [items] = useState(tasks)
+  const {tasks} = useContext(TaskContext)
+
   const [addForm, setAddFrom] = useState(false)
 
   const [heading, setHeading] = useState('');
@@ -23,7 +26,7 @@ const Home = () => {
   const [dateTime, setDateTime] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false)
-
+  // const [edit, setEdit] = useState(false)
 
 
   const uploadImageDisplay = (e) => {
@@ -88,15 +91,15 @@ const Home = () => {
 
        {!addForm && <Card className='h-[60vh] overflow-y-auto'>
            <List className='pt-10 pb-20'>
-             {items.map((item) => <ListItem key={item.id} className='p-4 w-full justify-between flex items-center shadow-md '>
+             {tasks.map((item) => <ListItem key={item.id} className='p-4 w-full justify-between flex items-center shadow-md '>
             <Card className='flex gap-2 flex-col w-6/12'>
             <span className='truncate '>{item.heading}</span>
             <small className='text-xs text-slate-500'>{moment(item.date).format('MMMM Do YYYY, h:mm:ss a')}</small>
             </Card>
              <Card className='flex flex-row gap-2 justify-evenly  items-center w-5/12'>
-             <span><Button className='bg-blue-200 px-2 w-full py-1 rounded-xl shadow-sm'><CiEdit /></Button></span>
+             <span><Button onClick={() => setAddFrom(true)} className='bg-blue-200 px-2 w-full py-1 rounded-xl shadow-sm'><CiEdit /></Button></span>
               <span><Button className='bg-red-200 text-red-500 px-2 py-1 w-full rounded-xl shadow-sm'><MdDelete /></Button></span>
-              <span><Button className={` rounded-xl w-20 py-1 px-2 shadow-sm ${item.priority === 'low' ?'bg-green-300': item.priority === 'medium' ? 'bg-orange-300' : 'bg-red-300'}`}>{item.priority}</Button></span>
+              <span><Button className={` r  ounded-xl w-20 py-1 px-2 shadow-sm ${item.priority === 'low' ?'bg-green-300': item.priority === 'medium' ? 'bg-orange-300' : 'bg-red-300'}`}>{item.priority}</Button></span>
              </Card>
              </ListItem>)}
            </List>
