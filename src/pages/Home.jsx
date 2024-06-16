@@ -4,7 +4,6 @@ import HeadingFactory from '../components/ui/heading'
 import Button from '../components/ui/Button'
 import { FaPlus } from "react-icons/fa6";
 import { useContext, useState } from 'react';
-// import { tasks } from '../seed/tasks';
 import { List, ListItem } from '../components/ui/List';
 import moment from 'moment'
 import { CiEdit } from "react-icons/ci";
@@ -24,9 +23,10 @@ const Home = () => {
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
   const [dateTime, setDateTime] = useState('');
-  const [priority, setPriority] = useState('');
+  const [priority, setPriority] = useState('low');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false)
+  const [imageUrl, setImageUrl] = useState('')
 
 
   const setEditData = (item) => {
@@ -38,7 +38,28 @@ const Home = () => {
      setAddFrom(true)
   }
 
-  const uploadImageDisplay = (e) => {
+  const uploadImageDisplay = async (e) => {
+
+    try{
+      
+      const data = new FormData()
+      data.append("file", e.target.files[0])
+      data.append("upload_preset", "machinetest")
+      data.append("cloud_name","dxv2tmvfw")
+    
+
+      const url = `https://api.cloudinary.com/v1_1/dxv2tmvfw/image/upload`
+      const res = await fetch(url,{
+        method:"post",
+        body: data
+        })
+       
+        const re = await res.json()
+        setImageUrl(re.url)
+
+    }catch(e){
+      console.log(e)
+    }
     setImage(e.target.files[0])
   }
 
@@ -50,8 +71,9 @@ const Home = () => {
       formData.append('heading', heading);
       formData.append('description', description);
       formData.append('dateTime', dateTime);
+      data.append('priority', priority)
       if (image) {
-        formData.append('image', image);
+        formData.append('image', imageUrl);
       }
 
 
@@ -148,7 +170,8 @@ const Home = () => {
               <Card className="flex flex-col w-full border-2  p-4 rounded-xl">
                 <Card>
                   Preview
-                </Card>
+                  <img width={200} height={200} src={imageUrl} />
+                </Card> 
               <label htmlFor='image' className='text-slate-600 font-bold py-4'>selectan image</label>
               <Input type='file'
                name="image"    

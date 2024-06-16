@@ -9,8 +9,6 @@ function App() {
 
   const [task, setTask] = useState(tasks)
 
-  const [taskIdToEdit, setTaskIdToEdit] = useState(null)
-
   const deleteTask = (id) => {
     const taskz = task.filter((tas) => tas.id.toString() !== id.toString())
     setTask([...taskz])
