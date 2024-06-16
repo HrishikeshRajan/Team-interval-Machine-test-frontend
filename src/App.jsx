@@ -7,7 +7,12 @@ import { useState } from 'react';
 
 function App() {
 
-  const [task, setTask] = useState(tasks)
+  const [task, setTask] = useState([])
+
+
+  const update = (arr) => {
+    setTask([...arr])
+  }
 
   const deleteTask = (id) => {
     const taskz = task.filter((tas) => tas.id.toString() !== id.toString())
@@ -28,7 +33,7 @@ function App() {
   
 
   return (
-    <TaskContext.Provider value={{tasks: task, deleteTask, editTask}}>
+    <TaskContext.Provider value={{tasks: task, deleteTask, editTask, update}}>
           <Home />
       </TaskContext.Provider>
 

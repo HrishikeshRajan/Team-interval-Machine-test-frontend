@@ -10,6 +10,7 @@ import useSubmit from '../hooks/useSubmit';
 import useCloudinary from '../hooks/useCloudinary';
 import TableHeader from '../components/tableHeader/TableHeader';
 import Tasks from '../components/tasks/Tasks';
+import useListAllTasks from '../hooks/useListAllTasks';
 
 
 const Home = () => {
@@ -34,6 +35,9 @@ const Home = () => {
   }
 
 
+   useListAllTasks()
+
+
   const [uploadImage, imageError, imageLoading] = useCloudinary()
   const uploadImageDisplay = async (e) => {
 
@@ -42,7 +46,6 @@ const Home = () => {
       if(!e.target.files[0]){ return}
       
      const url =  await uploadImage(e.target.files[0])
-       console.log(url)
        setImageUrl(url)
 
     }catch(e){
