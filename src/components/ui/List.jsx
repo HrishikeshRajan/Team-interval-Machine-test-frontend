@@ -7,9 +7,9 @@ export const List = ({ children, ...rest}) => {
     )
   }
 
-export const ListItem = ({key, children, ...rest}) => {
+export const ListItem = ({children, ...rest}) => {
   return (
-    <li key={key} {...rest}>{children}</li>
+    <li {...rest}>{children}</li>
   )
 }
 
