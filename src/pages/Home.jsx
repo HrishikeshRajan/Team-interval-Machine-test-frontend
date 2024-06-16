@@ -17,17 +17,26 @@ import { TaskContext } from '../memory/context';
 const Home = () => {
 
   // const [items] = useState(tasks)
-  const {tasks} = useContext(TaskContext)
+  const {tasks, deleteTask} = useContext(TaskContext)
 
   const [addForm, setAddFrom] = useState(false)
 
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('');
   const [dateTime, setDateTime] = useState('');
+  const [priority, setPriority] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false)
-  // const [edit, setEdit] = useState(false)
 
+
+  const setEditData = (item) => {
+     setHeading(item.heading)
+     setDescription(item.description)
+     setDateTime(item.dateTime)
+     setImage(item.image)
+     setPriority(item.priority)
+     setAddFrom(true)
+  }
 
   const uploadImageDisplay = (e) => {
     setImage(e.target.files[0])
@@ -97,8 +106,8 @@ const Home = () => {
             <small className='text-xs text-slate-500'>{moment(item.date).format('MMMM Do YYYY, h:mm:ss a')}</small>
             </Card>
              <Card className='flex flex-row gap-2 justify-evenly  items-center w-5/12'>
-             <span><Button onClick={() => setAddFrom(true)} className='bg-blue-200 px-2 w-full py-1 rounded-xl shadow-sm'><CiEdit /></Button></span>
-              <span><Button className='bg-red-200 text-red-500 px-2 py-1 w-full rounded-xl shadow-sm'><MdDelete /></Button></span>
+             <span><Button onClick={() => setEditData(item)} className='bg-blue-200 px-2 w-full py-1 rounded-xl shadow-sm'><CiEdit /></Button></span>
+              <span><Button onClick={() => deleteTask(item.id)} className='bg-red-200 text-red-500 px-2 py-1 w-full rounded-xl shadow-sm'><MdDelete /></Button></span>
               <span><Button className={` r  ounded-xl w-20 py-1 px-2 shadow-sm ${item.priority === 'low' ?'bg-green-300': item.priority === 'medium' ? 'bg-orange-300' : 'bg-red-300'}`}>{item.priority}</Button></span>
              </Card>
              </ListItem>)}
@@ -124,7 +133,17 @@ const Home = () => {
               </Card>
               <Card className="flex flex-col w-full ">
               <label htmlFor='date-time'   className='text-slate-600 font-bold py-4'>select date and time</label>
-              <Input type='datetime-local'  value={dateTime} onChange={(e) => setDateTime(e.target.value)} name="date-time" className='p-3 b w-full bg-slate-200 rounded-md' />
+              <Input type='datetime-local'  value={dateTime} onChange={(e) => setDateTime(e.target.value)} name="dateTime" className='p-3 b w-full bg-slate-200 rounded-md' />
+              </Card>
+
+              <Card className="flex flex-col w-full py-10 ">
+              <label htmlFor='priority'   className='text-slate-600 font-bold py-4'>select priority</label>
+
+               <select className='w-[200px]' value={priority} onChange={(e) => setPriority(e.target.value)}>
+                <option value={'low'}>low</option>
+                <option value={'medium'}>medium</option>
+                <option value={'high'}>high</option>
+               </select>
               </Card>
               <Card className="flex flex-col w-full border-2  p-4 rounded-xl">
                 <Card>
