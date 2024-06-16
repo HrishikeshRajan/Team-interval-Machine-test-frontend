@@ -8,10 +8,19 @@ import moment from 'moment';
 import { TaskContext } from '../../memory/context';
 import { CiEdit } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
+import useDeleteTask from '../../hooks/useDeleteTask';
 
 const Tasks = ({tasks, setEditData}) => {
 
     const {deleteTask} = useContext(TaskContext)
+
+   const [deleteTaskById,loading, error] =  useDeleteTask()
+
+
+   const handleDeletetask = (item) => {
+     deleteTaskById(item.id)
+     deleteTask(item.id)
+   }
   return (
     <Card className='h-[60vh] overflow-y-auto'>
          <List className='pt-10 pb-20'>
@@ -23,7 +32,7 @@ const Tasks = ({tasks, setEditData}) => {
                       </Card>
                      <Card className='flex flex-row gap-2 justify-evenly  items-center w-5/12'>
                      <span><Button onClick={() => setEditData(item)} className='bg-blue-200 px-2 w-full py-1 rounded-xl shadow-sm'><CiEdit /></Button></span>
-                     <span><Button onClick={() => deleteTask(item.id)} className='bg-red-200 text-red-500 px-2 py-1 w-full rounded-xl shadow-sm'><MdDelete /></Button></span>
+                     <span><Button onClick={() => handleDeletetask(item)} className='bg-red-200 text-red-500 px-2 py-1 w-full rounded-xl shadow-sm'><MdDelete /></Button></span>
                      <span><Button className={` r  ounded-xl w-20 py-1 px-2 shadow-sm ${item.priority === 'low' ?'bg-green-300': item.priority === 'medium' ? 'bg-orange-300' : 'bg-red-300'}`}>{item.priority}</Button></span>
                      </Card>
                 </ListItem>)}
