@@ -34,6 +34,14 @@ const Home = () => {
      setAddFrom(true)
   }
 
+  const clearEditForm = () => {
+    setHeading('')
+    setDescription('')
+    setDateTime('')
+    setPriority('')
+    setAddFrom(false)
+ }
+
 
    useListAllTasks()
 
@@ -133,7 +141,7 @@ const Home = () => {
               </Card>
 
              {addForm &&  <input type="submit" disabled={loading} value={loading ? 'loading' : 'submit'} className='p-2 bg-yellow-500 font-semibold text-black rounded-md' /> }
-             {addForm &&   <input type="button" value={'cancel'} onClick={() => setAddFrom(!addForm)} className='p-2 bg-slate-300 font-semibold text-slate-500 text-black rounded-md' />
+             {addForm &&   <input type="button" value={'cancel'} onClick={() => clearEditForm()} className='p-2 bg-slate-300 font-semibold text-slate-500 text-black rounded-md' />
     }
 
            </form>
