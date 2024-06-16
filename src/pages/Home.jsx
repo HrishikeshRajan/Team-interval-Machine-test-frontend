@@ -30,7 +30,7 @@ const Home = () => {
       <Card className='w-full flex justify-between px-1 px-4 p-3 text-slate-700 '>
         <span className='text-left'>Task</span>
         <Card className='flex flex-row  gap-2 justify-evenly items-center w-5/12'>
-          <span>Edit</span><span>Delete</span> <span className='flex items-center gap-2'> Priority <FaFilter /> </span>
+          <span>Edit</span><span>Delete</span> <span className='flex items-center gap-2'> Priority <FaFilter  size={10}/> </span>
         </Card>
       </Card>
 
