@@ -7,7 +7,8 @@ import { useState } from 'react';
 function App() {
 
   const [task, setTask] = useState([])
-
+   
+  const [view, setView] = useState(null)
 
   const update = (arr) => {
     setTask([...arr])
@@ -30,12 +31,18 @@ function App() {
     setTask([...task])
   }
 
+  const selectToView = (id) => {
+     const selectedTask = task.find((task) => task.id.toString() === id.toString())
+     console.log(selectedTask)
+       setView(selectedTask)
+  }
 
-
-  
+  const removeSelectedTaskToView = () => {
+      setView(null)
+ }  
 
   return (
-    <TaskContext.Provider value={{tasks: task, deleteTask, editTask, update, push}}>
+    <TaskContext.Provider value={{tasks: task, deleteTask, editTask, update, push, selectToView, view, removeSelectedTaskToView }}>
           <Home />
       </TaskContext.Provider>
 

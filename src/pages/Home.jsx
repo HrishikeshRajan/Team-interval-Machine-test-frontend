@@ -12,11 +12,12 @@ import TableHeader from '../components/tableHeader/TableHeader';
 import Tasks from '../components/tasks/Tasks';
 import useListAllTasks from '../hooks/useListAllTasks';
 import useEditTask from '../hooks/useEditTask';
+import ViewTask from '../components/view/ViewTask';
 
 
 const Home = () => {
 
-  const {tasks, editTask, push } = useContext(TaskContext)
+  const {tasks, editTask, push, view } = useContext(TaskContext)
 
   const [addForm, setAddFrom] = useState(false)
   const [id, setId] = useState('');
@@ -96,19 +97,19 @@ const Home = () => {
    </Card>
 
    <Card className=' w-full xl:w-6/12 flex relative  px-1 flex-col xl:px-10' >
-       {!addForm && <Card className='flex justify-center'>
+       {!addForm && !view && <Card className='flex justify-center'>
           <Button onClick={() => setAddFrom(!addForm)} className="bg-cyan-500 text-white p-4 w-full rounded-md flex items-center justify-center gap-2 ">Add <FaPlus /></Button>
       </Card>}
 
       {/* List Section */}
 
-      {!addForm && <TableHeader /> }
+      {!addForm && !view && <TableHeader /> }
 
-       {!addForm && <Tasks  tasks={tasks} setEditData={setEditData} />}
+       {!addForm && !view && <Tasks  tasks={tasks} setEditData={setEditData} />}
 
        {/* Add form section */}
 
-       {addForm &&  <Card className={`w-full px-4`}>
+       {addForm && !view &&  <Card className={`w-full px-4`}>
            <form
 
            onSubmit={onsubmit}
@@ -162,7 +163,7 @@ const Home = () => {
            </form>
        </Card> }
 
-    
+          {view && <ViewTask />}    
     </Card>
 
    </Card>

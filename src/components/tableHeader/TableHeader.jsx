@@ -25,13 +25,13 @@ const TableHeader = () => {
 
 
   return (
-    <Card className='w-full flex  justify-between px-1 p-4 ps-4  text-slate-700'>
+    <Card className='w-full flex  sm:justify-between px-1 p-4 xl:ps-4  text-slate-700'>
         <Card className='w-6/12'>
-        <span className='text-left'>Task</span>
+        <span className='text-left text-xs'>Task</span>
         </Card>
-        <Card className='flex flex-row justify-between items-center  xl:pe-10 w-5/12'>
-          <span className='w-full'>Edit</span><span className='w-full'>Delete</span> 
-          <button onClick={() => sorts()} className='flex items-center gap-2 w-full'> Priority <FaFilter  size={10}/> </button>
+        <Card className='flex flex-row gap-2 justify-between items-center  xl:pe-10 w-5/12'>
+          <span className='w-full text-xs'>Edit</span><span className='w-full text-xs'>Delete</span> 
+          <button onClick={() => sorts()} className='flex items-center gap-2 text-xs w-full'> Priority <FaFilter  size={10}/> </button>
         </Card>
       </Card>
   )
